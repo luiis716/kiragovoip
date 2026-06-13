@@ -1,20 +1,6 @@
 # Changelog
 
-Todas as mudanças notáveis do KiraGo VoIP são documentadas aqui.  
-Este arquivo é publicado no **repositório público de releases**.
 
-Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
-
----
-
-## [Unreleased]
-
-### Em desenvolvimento (repo privado)
-
-- Melhorias de campanha e áudio VoIP
-- Integração de licença com painel PIX/cartão
-
----
 
 ## [1.0.0] - 2026-06-13
 

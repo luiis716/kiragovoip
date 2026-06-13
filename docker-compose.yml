@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kirago
+      POSTGRES_PASSWORD: kirago
+      POSTGRES_DB: kirago
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kirago -d kirago"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://kirago:kirago@db:5432/kirago
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-changeme}
+      LICENSE_KEY: ${LICENSE_KEY:-}
+    volumes:
+      - instances:/app/instances
+      - audio:/app/audio
+      - recordings:/app/data/recordings
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  instances:
+  audio:
+  recordings:

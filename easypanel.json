@@ -1,0 +1,47 @@
+{
+  "services": [
+    {
+      "type": "postgres",
+      "data": {
+        "projectName": "kiravoip",
+        "serviceName": "kiravoip-db",
+        "password": "altere-sua-senha-aqui"
+      }
+    },
+    {
+      "type": "app",
+      "data": {
+        "projectName": "kiravoip",
+        "serviceName": "kiravoip-api",
+        "source": {
+          "type": "image",
+          "image": "ggdadds/kiragovoip:latest"
+        },
+        "domains": [
+          {
+            "host": "$(EASYPANEL_DOMAIN)",
+            "port": 3001
+          }
+        ],
+        "mounts": [
+          {
+            "type": "volume",
+            "name": "instances",
+            "mountPath": "/app/instances"
+          },
+          {
+            "type": "volume",
+            "name": "data",
+            "mountPath": "/app/data"
+          },
+          {
+            "type": "volume",
+            "name": "audio",
+            "mountPath": "/app/audio"
+          }
+        ],
+        "env": "PORT=3001\nTZ=America/Sao_Paulo\nADMIN_TOKEN=altere-seu-token-admin\nLICENSE_KEY=LIC-XXXX-XXXX-XXXX-XXXX\nDATABASE_URL=postgresql://postgres:altere-sua-senha-aqui@kirago-db:5432/kirago\nCORS_ORIGIN=*\nCALL_INTERVAL_SEC=15\nMAX_CAMPAIGN_ITEMS=500\nSCHEDULE_POLL_MS=5000"
+      }
+    }
+  ]
+}

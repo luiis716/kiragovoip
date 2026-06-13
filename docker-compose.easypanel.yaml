@@ -1,0 +1,48 @@
+# EasyPanel: use "Compose" e cole ESTE arquivo.
+# Para "Create from Schema" (JSON), use easypanel.json na raiz do projeto.
+
+services:
+  kirago-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-altere-sua-senha-aqui}
+      POSTGRES_DB: ${DB_NAME:-kirago}
+      TZ: America/Sao_Paulo
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d kirago"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  kirago-api:
+    image: ggdadds/kiragovoip:latest
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      TZ: America/Sao_Paulo
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-altere-seu-token-admin}
+      LICENSE_KEY: ${LICENSE_KEY:-LIC-XXXX-XXXX-XXXX-XXXX}
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-altere-sua-senha-aqui}@kirago-db:5432/${DB_NAME:-kirago}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      CALL_INTERVAL_SEC: ${CALL_INTERVAL_SEC:-15}
+      MAX_CAMPAIGN_ITEMS: ${MAX_CAMPAIGN_ITEMS:-500}
+      SCHEDULE_POLL_MS: ${SCHEDULE_POLL_MS:-5000}
+    volumes:
+      - instances:/app/instances
+      - data:/app/data
+      - audio:/app/audio
+    depends_on:
+      kirago-db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  instances:
+  data:
+  audio:
